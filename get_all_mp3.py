@@ -25,6 +25,7 @@ def get_all_mp3(spk_id, spk_audio):
             os.makedirs(spk)
             os.makedirs(spk+"/mp3")
             os.makedirs(spk+"/wav")
+            os.makedirs(spk+"/data")
         count_mp3 = 0
         mp3s = spk_audio[index_spk].split("\n")
         n_mp3 = len(mp3s)
@@ -50,19 +51,24 @@ def concat_mp3s(spk_ids):
     for spk_id in spk_ids:
         spk_mp3_path = '{}/mp3'.format(spk_id)
         all_mp3 = glob('{}/*.mp3'.format(spk_mp3_path))
+        print("Combining {}".format(spk_id))
         if len(all_mp3) > 1:
             playlist_mp3 = [AudioSegment.from_file(mp3_file) for mp3_file in all_mp3]
             combined = AudioSegment.empty()
             for mp3 in playlist_mp3:
                 combined+=mp3
-            combined.export(spk_mp3_path+'/all.mp3', format="mp3") 
+            combined.export(spk_id+'/data/all.mp3', format="mp3")
+        print("Combine Done {}".format(spk_id)) 
 
 def get_srt(spk_ids):
     write_srt = WSRT()
     for spk_id in spk_ids:
         spk_mp3_path = '{}/mp3'.format(spk_id)
-        mp3 = glob('{}/*.mp3'.format(spk_mp3_path))
-        write_srt.save_srt_from_mp3(mp3=mp3)
+        mp3s = sorted(glob('{}/*.mp3'.format(spk_mp3_path)))
+        for mp3 in mp3s:
+            print(mp3)
+            write_srt.save_srt_from_mp3(mp3=mp3)
+            print("Oke{}".format(mp3))
 
 def get_meta_data(spk_ids):
     for spk_id in spk_ids:
@@ -87,16 +93,16 @@ if __name__ == '__main__':
     print("!!!--> STEP1: GET ALL MP3 Audio DONE <--!!!")
     print("==> STEP2 START!!!")
     print("... STEP2 Running...")
-    concat_mp3s(spk_ids=spk_id)
-    print("!!!--> STEP2: COMBINED ALL MP3 DONE <--!!!")
+    #concat_mp3s(spk_ids=spk_id)
+    #print("!!!--> STEP2: COMBINED ALL MP3 DONE <--!!!")
     print("==> STEP3 START!!!")
     print("... STEP3 Running...")
     get_srt(spk_ids=spk_id)
     print("!!!--> STEP3: GET SRT ALL SPK DONE <--!!!")
-    print("==> STEP4 START!!!")
-    print("... STEP4 Running...")
-    get_meta_data(spk_ids=spk_id)
-    print("!!!--> STEP4: WRITE META DATA ALL SPK DONE <--!!!")
+    #print("==> STEP4 START!!!")
+    #print("... STEP4 Running...")
+    #get_meta_data(spk_ids=spk_id)
+    #print("!!!--> STEP4: WRITE META DATA ALL SPK DONE <--!!!")
 
 
 # video = 'https://www.youtube.com/watch?v=yZrvuX2rrNk'
@@ -104,4 +110,3 @@ if __name__ == '__main__':
 # # Convert to audio file
 # audio = data.streams.get_audio_only()
 # audio.download(filename='audio2.mp3')
-
