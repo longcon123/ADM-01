@@ -73,10 +73,13 @@ def get_srt(spk_ids):
 def get_meta_data(spk_ids):
     for spk_id in spk_ids:
         spk_mp3_path = '{}/mp3'.format(spk_id)
-        mp3 = glob('{}/*.mp3'.format(spk_mp3_path))[0]
-        srt = glob('{}/*.srt'.format(spk_mp3_path))[0]
-        meta_dt = WMD(mp3, srt)
-        meta_dt.write_meta_data(spk_id)
+        mp3s = glob('{}/*.mp3'.format(spk_mp3_path))
+        srts = glob('{}/*.srt'.format(spk_mp3_path))
+        for mp3, srt in zip(mp3s, srts):
+            print("Working with{}".format(mp3s))
+            meta_dt = WMD()
+            meta_dt.write_meta_data(spk_id, mp3, srt)
+            print("Done with{}".format(mp3s))
 
 
 start_time = time.time()
